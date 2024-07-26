@@ -12,11 +12,13 @@ class Resposta extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue, // Define a cor do botão
-          foregroundColor: Colors.black, // Define a cor do texto
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
         ),
         onPressed: onSelect,
-        child: Text(texto), // Mover child para o final
+        child: Text(
+          texto,
+        ),
       ),
     );
   }

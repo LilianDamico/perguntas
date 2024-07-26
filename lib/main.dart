@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './questao.dart';
-import './resposta.dart';
+import './questionario.dart';
+import './resultado.dart';
 
 void main() {
   runApp(const PerguntaApp());
@@ -9,27 +9,54 @@ void main() {
 
 class PerguntaAppState extends State<PerguntaApp> {
   var _perguntaSelecionada = 0;
+  var _pontuacaoTotal = 0;
   final _perguntas = const [
     {
       'texto': 'Qual sua cor favorita?',
-      'respostas': ['Azul', 'Verde', 'Rosa', 'Lilás', 'Vermelho'],
+      'respostas': [
+        {'texto': 'Azul', 'pontuacao': 10},
+        {'texto': 'Verde', 'pontuacao': 9},
+        {'texto': 'Rosa', 'pontuacao': 8},
+        {'texto': 'Lilás', 'pontuacao': 8},
+        {'texto': 'Vermelho', 'pontuacao': 10},
+      ],
     },
     {
       'texto': 'Qual é seu animal favorito?',
-      'respostas': ['Gato', 'Cachorro', 'Cavalo', 'Golfinho', 'Coruja'],
+      'respostas': [
+        {'texto': 'Gato', 'pontuacao': 10},
+        {'texto': 'Cachorro', 'pontuacao': 10},
+        {'texto': 'Cavalo', 'pontuacao': 10},
+        {'texto': 'Golfinho', 'pontuacao': 10},
+        {'texto': 'Coruja', 'pontuacao': 10},
+      ],
     },
     {
       'texto': 'Qual sua pedra preferida?',
-      'respostas': ['Diamante', 'Rubi', 'Safira', 'Esmeralda', 'Topázio'],
+      'respostas': [
+        {'texto': 'Diamante', 'pontuacao': 10},
+        {'texto': 'Rubi', 'pontuacao': 10},
+        {'texto': 'Safira', 'pontuacao': 10},
+        {'texto': 'Esmeralda', 'pontuacao': 9},
+        {'texto': 'Topázio', 'pontuacao': 7},
+      ],
     }
   ];
 
-  void _responder() {
+  void _responder(int pontuacao) {
     if (temPerguntaSelecionada) {
       setState(() {
         _perguntaSelecionada++;
+        _pontuacaoTotal += pontuacao;
       });
     }
+  }
+
+  void _reiniciarQuestionario() {
+    setState(() {
+      _perguntaSelecionada = 0;
+      _pontuacaoTotal = 0;
+    });
   }
 
   bool get temPerguntaSelecionada {
@@ -38,10 +65,6 @@ class PerguntaAppState extends State<PerguntaApp> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> respostas = temPerguntaSelecionada
-        ? _perguntas[_perguntaSelecionada]['respostas'] as List<String>
-        : [];
-
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
@@ -62,19 +85,12 @@ class PerguntaAppState extends State<PerguntaApp> {
           title: const Text('Perguntas'),
         ),
         body: temPerguntaSelecionada
-            ? Column(
-                children: <Widget>[
-                  Questao(_perguntas[_perguntaSelecionada]['texto'] as String),
-                  ...respostas
-                      .map((resposta) => Resposta(resposta, _responder)),
-                ],
+            ? Questionario(
+                perguntas: _perguntas,
+                perguntaSelecionada: _perguntaSelecionada,
+                quandoResponder: _responder,
               )
-            : const Center(
-                child: Text(
-                  'Parabéns!',
-                  style: TextStyle(fontSize: 28),
-                ),
-              ),
+            : Resultado(_pontuacaoTotal, _reiniciarQuestionario),
       ),
     );
   }
